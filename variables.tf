@@ -50,6 +50,18 @@ variable "lb_http_ports" {
   default     = {}
 }
 
+variable "lb_http_ingress_cidr_blocks" {
+  description = "List of CIDR blocks to allowed to access the Load Balancer through HTTP"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "lb_http_ingress_prefix_list_ids" {
+  description = "List of prefix list IDs blocks to allowed to access the Load Balancer through HTTP"
+  type        = list(string)
+  default     = []
+}
+
 variable "lb_https_ports" {
   description = "Map containing objects to define listeners behaviour based on type field. If type field is `forward`, include listener_port and the target_group_port. For `redirect` type, include listener port, host, path, port, protocol, query and status_code. For `fixed-response`, include listener_port, content_type, message_body and status_code"
   type        = map(any)
@@ -61,17 +73,39 @@ variable "lb_https_ports" {
     }
   }
 }
-
 variable "lb_waf_web_acl_arn" {
   description = "ARN of a WAFV2 to associate with the ALB"
   type        = string
   default     = ""
 }
 
+variable "lb_internal" {
+  description = "To set whether the ALB is internal"
+  type        = bool
+  default     = false
+}
+
+variable "lb_https_ingress_cidr_blocks" {
+  description = "List of CIDR blocks to allowed to access the Load Balancer through HTTPS"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "lb_https_ingress_prefix_list_ids" {
+  description = "List of prefix list IDs blocks to allowed to access the Load Balancer through HTTPS"
+  type        = list(string)
+  default     = []
+}
+
+variable "ssl_policy" {
+  description = "SSL policy for ALB"
+  type    = string
+  default = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
+}
+
 #------------------------------------------------------------------------------
 # AWS Database
 #------------------------------------------------------------------------------
-
 variable "db_instance_size" {
   type        = string
   default     = "db.r4.large"
