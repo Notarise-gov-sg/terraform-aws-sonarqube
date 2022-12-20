@@ -3,6 +3,7 @@
 #------------------------------------------------------------------------------
 locals {
   sonar_db_engine_version = var.db_engine_version
+  sonar_db_major_engine_version = var.db_major_engine_version
   sonar_db_port           = 5432
   sonar_db_instance_size  = var.db_instance_size
   sonar_db_name           = var.db_name
@@ -73,7 +74,7 @@ module "ecs_fargate" {
 
   lb_enable_cross_zone_load_balancing = var.lb_enable_cross_zone_load_balancing
   lb_waf_web_acl_arn                  = var.lb_waf_web_acl_arn
-  ssl_policy                          = var.enable_ssl  ? var.ssl_policy : null  
+  ssl_policy                          = var.enable_ssl ? var.ssl_policy : null  
   default_certificate_arn             = var.enable_ssl ? module.acm[0].acm_certificate_arn : null
 
   # Application Load Balancer Logs
@@ -111,7 +112,7 @@ module "ecs_fargate" {
     },
     {
       name  = "SONAR_JDBC_URL"
-      value = "jdbc:postgresql://${aws_rds_cluster.aurora_db.endpoint}/${local.sonar_db_name}?sslmode=require"
+      value = "jdbc:postgresql://${module.db.db_instance_endpoint}/${local.sonar_db_name}?sslmode=require"
     },
   ]
   log_configuration = {
